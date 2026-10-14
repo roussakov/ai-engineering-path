@@ -1,0 +1,40 @@
+[project]
+name = "pre-lesson-1"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "roussakov", email = "alexander.roussakov@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "dotenv>=0.9.9",
+    "fastapi[standard]>=0.143.0",
+    "pydantic-ai>=2.56.0",
+    "pydantic-settings>=2.15.0",
+]
+
+[project.scripts]
+pre-lesson-1 = "pre_lesson_1:main"
+
+[tool.fastapi]
+entrypoint = "pre_lesson_1.main:app"
+
+[build-system]
+requires = ["uv_build>=0.12.23,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.414",
+    "ruff>=0.17.0",
+]
+
+[tool.pyright]
+include = ["src"]
+exclude = ["**/__pycache__", ".venv"]
+pythonVersion = "3.14"
+typeCheckingMode = "strict"
+
+[tool.ruff.lint]
+extend-select = ["ANN"]

@@ -1,5 +1,21 @@
+from enum import StrEnum
+
 from pydantic import BaseModel, ConfigDict, Field
 
+
+class InternalErrorCode(StrEnum):
+    INTERNAL_ERROR = "INTERNAL_ERROR"
+
+class AssistantErrorCode(StrEnum):
+    UNAVAILABLE = "ASSISTANT_UNAVAILABLE"
+
+class InternalErrorResponse(BaseModel):
+    code: InternalErrorCode
+    detail: str
+
+class AssistantErrorResponse(BaseModel):
+    code: AssistantErrorCode
+    detail: str
 
 class Intent(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -10,11 +26,12 @@ class Intent(BaseModel):
         description="The exact phrase expressing this intent"
     )
 
-
 class IntentAnalysis(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    primary_intent: Intent
+    primary_intents: list[Intent] = Field(
+        description="All primary intents"
+    )
     secondary_intents: list[Intent] = Field(
         description=(
             "All additional independent intents found in the message. "

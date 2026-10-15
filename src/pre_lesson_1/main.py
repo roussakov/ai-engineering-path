@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 
-from pre_lesson_1.assistant.router import router
+from pre_lesson_1 import assistant
 
 app = FastAPI()
 
-app.include_router(router)
+app.include_router(assistant.router)
+
+assistant.register_handlers(app);

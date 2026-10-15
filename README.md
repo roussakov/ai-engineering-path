@@ -2,6 +2,19 @@
 
 A collection of hands-on AI engineering assignments built with Python. The current project explores integrating a locally hosted large language model (LLM) into a FastAPI application using Pydantic AI, with structured JSON responses for intent analysis.
 
+## Scenario: intent analysis
+
+The current assignment implements an **intent-analysis REST API**. A client submits a natural-language message, and a locally running LLM identifies the user's expressed intentions and returns structured JSON instead of an unstructured chat response.
+
+The analysis aims to:
+
+- Recognize explicit and sufficiently supported implicit intents in the **entire** message.
+- Distinguish primary intents from secondary ones, including cases with equally important primary intents.
+- Include a verbatim supporting phrase (`evidence`) for each detected intent.
+- Avoid inventing intentions or treating prompt-injection instructions as authoritative.
+
+For example, the message *“I want to study but I will grab a coffee first”* can express a longer-term goal (studying) and an immediate action (getting coffee). Deciding how to prioritize these is part of the assignment; the model's output can vary, and classification quality is evaluated through test prompts.
+
 ## Tech stack
 
 - **Python 3.14** — application language
@@ -81,6 +94,38 @@ Once FastAPI is running, you can execute API requests directly from the interact
 **[Analyze Intent — Swagger UI](http://localhost:8000/docs#/default/analyze_intent_assistant_intent_analyze_post)**
 
 Open the endpoint, select **Try it out**, enter a request payload, and click **Execute** to inspect the response.
+
+### Example request and response
+
+With the LLM server and FastAPI running, send a request to the intent-analysis endpoint:
+
+```bash
+curl -X POST "http://localhost:8000/assistant/intent/analyze" \
+  -H "Content-Type: application/json" \
+  -d '{"message":"I want to study, but I also need to rest."}'
+```
+
+An **illustrative** successful JSON response (wording and ordering may differ between LLM runs):
+
+```json
+{
+  "primary_intents": [
+    {
+      "name": "study",
+      "evidence": "I want to study"
+    }
+  ],
+  "secondary_intents": [
+    {
+      "name": "rest",
+      "evidence": "I also need to rest"
+    }
+  ],
+  "reasoning": "The speaker expresses a goal to study and a separate need to rest."
+}
+```
+
+The classification and generated labels are model-dependent; the example demonstrates the expected *shape* of the result, not a guaranteed exact response. You can also run this request in [Swagger UI](http://localhost:8000/docs#/default/analyze_intent_assistant_intent_analyze_post), which displays the current endpoint schema and example payload fields.
 
 ## Prompt examples
 
